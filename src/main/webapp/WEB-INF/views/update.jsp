@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2>update Student</h2>
-<form action="update" method="post">
+<form action="updateNow" method="post">
 
 <label>ID:</label>
     <input type="text" name="id" value="${student.id}"/>

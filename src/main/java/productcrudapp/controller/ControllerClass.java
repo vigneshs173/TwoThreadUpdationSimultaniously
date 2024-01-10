@@ -1,11 +1,11 @@
 package productcrudapp.controller;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import productcrudapp.Service.ServiceClass;
 import productcrudapp.model.Student;
-
 import java.util.List;
 
 @Controller
@@ -35,8 +35,7 @@ public class ControllerClass {
         return "list";
     }
     @GetMapping("/fetching")
-    public String fetchingGet()
-    {
+    public String fetchingGet(){
         return "fetch";
     }
 
@@ -49,15 +48,15 @@ public class ControllerClass {
     }
 
     @GetMapping("/update")
-    public String updateGet()
-    {
+    public String updateGet(){
         return "update";
     }
 
-    @PostMapping("/update")
+    @PostMapping("/updateNow")
     public String UpdateController(@ModelAttribute Student student) throws InterruptedException {
+
+        System.out.println("controller ---------------------------------------------------------");
         serviceClass.test(student);
         return "update";
     }
-
 }

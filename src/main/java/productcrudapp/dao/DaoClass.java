@@ -2,6 +2,7 @@ package productcrudapp.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import productcrudapp.model.Student;
@@ -25,17 +26,23 @@ public class DaoClass {
         return session.createQuery("From Student", Student.class).getResultList();
     }
 
-    public Student FetchDetailsDao(Long id)
+    public Student fetchDetailsDao(Long id)
     {
-        Session session= sessionFactory.getCurrentSession();
-        return session.get(Student.class,id);
+        Session session= sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
+        Student st = session.get(Student.class,id);
+        tx.commit();
+        session.close();
+        return st;
     }
 
-    public Student updateDao(Student student)
+    public void updateDao(Student student)
     {
-        Session session= sessionFactory.getCurrentSession();
+        Session session= sessionFactory.openSession();
+        Transaction tx = session.beginTransaction();
         session.update(student);
-        return student;
+        tx.commit();
+        session.close();
     }
 
 }
