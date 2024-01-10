@@ -1,212 +1,154 @@
 package productcrudapp.Service;
 
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import productcrudapp.Validation.ValidationForPostMan;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import productcrudapp.dao.DaoClass;
-import productcrudapp.model.PlacedStudent;
 import productcrudapp.model.Student;
-import javax.validation.Valid;
+
+
+import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class ServiceClass {
+    Thread t1;
+    Thread t2;
+    private final PlatformTransactionManager transactionManager;
+    private final DaoClass daoClass;
 
-	private final DaoClass daoClass;
+    public ServiceClass(PlatformTransactionManager transactionManager, DaoClass daoClass) {
+        this.transactionManager = transactionManager;
+        this.daoClass = daoClass;
+    }
 
-	@Autowired
-	public ServiceClass(DaoClass daoClass) {
-		this.daoClass = daoClass;
-	}
-	// create
-	@Transactional
-	public void createStudentService(Student student) {
-		daoClass.createStudentDao(student);
-	}
+    @Autowired
+    SessionFactory sessionFactory;
 
-	//get all
-	@Transactional
-	public List<Student> getAllStudentService() {
-		return daoClass.getAllStudentDao();
-	}
+    @Transactional
+    public String saveDetailsService(Student student) {
+        daoClass.saveDetailsDao(student);
+        return null;
+    }
 
-	//get all sorted by name
-	public List<Student> getAllStudentsSortedByName() {
-		return daoClass.getAllStudentsSortedByName();
-	}
+    @Transactional
+    public List<Student> GetDetailsService() {
+        return daoClass.GetDetailsDao();
+    }
 
-	//get all sorted by mark
-	public List<Student> getAllStudentsSortedByMark() {
-		return daoClass.getAllStudentsSortedByMark();
-	}
-
-	//get all Placed students
-	public List<PlacedStudent> getAllPlacedStudents() {
-		return daoClass.getAllStudentsPlacedDao();
-	}
+    @Transactional
+    public Student FetchDetailsService(Long id) {
+        return daoClass.FetchDetailsDao(id);
+    }
 
 
-	//get by id
-	@Transactional
-	public Student getStudentByIdService(Long id) {
-		return daoClass.getStudentByIdDao(id);
-	}
-
-	//delete
-	@Transactional
-	public void deleteStudentByIdService(Long id) {
-		daoClass.deleteStudentByIdDao(id);
-	}
-
-
-	//update
-	@Transactional
-	public void updateStudentService(Student student, Model model) {
-		daoClass.UpdateStudentDao(student);
-	}
-
-	//roll no exists or not
-	public boolean isStudentRollNoExistsService(@Valid Student student) {
-		return daoClass.isStudentRollNoExistsDao(student);
-	}
-
-	//id exists or not
-	@Transactional
-	public boolean isIdExistsInDbService(Student student) {
-		return daoClass.isIdExistsInDbDao(student);
-	}
-
-
-
-
-	//---------------------------------------------------moved----------------------------//
-//@Transactional
-//public void placeStudentService(Long id) {
-//	Student student = daoClass.getStudentByIdDao(id);
-//	if (student != null && student.getIsExists() == 1) {
-//		PlacedStudent placedStudent = new PlacedStudent();
-//		placedStudent.setId(student.getId());
-//		placedStudent.setName(student.getName());
-//		placedStudent.setRollno(student.getRollno());
-//		placedStudent.setGmail(student.getGmail());
-//		placedStudent.setMark(student.getMark());
-//		//placedStudent.setIsExists(student.getIsExists());
-//		daoClass.saveOrUpdatePlacedStudent(placedStudent);
-//		daoClass.updatePlacementStatus(id);
-//	}
+    //private final Object lock = new Object();
+//    private TransactionManager transactionManager; // assuming this is defined elsewhere
+//    private DaoClass daoClass; // assuming this is defined elsewhere
+//
+//    public void updateService(Student student, int increment) {
+//        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+//
+//        try {
+//            synchronized (lock) {
+//                Student currentStudent = daoClass.FetchDetailsDao(student.getId());
+//
+//                // Update roll number
+//                int updateRollNo = currentStudent.getRollno() + increment;
+//                currentStudent.setRollno(updateRollNo);
+//                daoClass.updateDao(currentStudent);
+//            }
+//
+//            transactionManager.commit(status);
+//        } catch (Exception e) {
+//            transactionManager.rollback(status);
+//            throw e;
+//        }
+//    }
+//
+//    public void simulate(final Student student, final int increment) {
+//        Thread t1 = new Thread(() -> {
+//            try {
+//                updateService(student, increment);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        Thread t2 = new Thread(() -> {
+//            try {
+//                updateService(student, increment);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        });
+//
+//        t1.start();
+//        t2.start();
+//
+//        try {
+//            t1.join();
+//            t2.join();
+//        } catch (InterruptedException ie) {
+//            ie.printStackTrace();
+//        }
+//    }
 //}
-//	@Transactional
-//	public void placeStudentService(Long id) {
-//		try {
-//			Student student = daoClass.getStudentByIdDao(id);
-//			if (student != null && student.getIsExists() == 1) {
-//				PlacedStudent placedStudent = new PlacedStudent();
-//				placedStudent.setId(student.getId());
-//				placedStudent.setName(student.getName());
-//				placedStudent.setRollno(student.getRollno());
-//				placedStudent.setGmail(student.getGmail());
-//				placedStudent.setMark(student.getMark());
-//				daoClass.saveOrUpdatePlacedStudent(placedStudent);
-//				daoClass.updatePlacementStatus(student);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
+    private static final Lock lock = new ReentrantLock();
+//    @Transactional
+//    public void updateService(Student student) throws InterruptedException {
+//        try {
+//            lock.lock();
+//            Student currentStudent = daoClass.FetchDetailsDao(student.getId());
+//            int updateRollNo = currentStudent.getRollno() + student.getRollno();
+//            currentStudent.setRollno(updateRollNo);
+//            daoClass.updateDao(currentStudent);
+//
+//        } finally {
+//            lock.unlock();
+//        }
+//    }
+//
+//}
+    @Transactional
+    public  void  updateService(Student student) {
+        try {
+            lock.lock();
+            Student currentStudent = daoClass.FetchDetailsDao(student.getId());
+            int updateRollNo = currentStudent.getRollno() + student.getRollno();
+            currentStudent.setRollno(updateRollNo);
+            System.out.println(Thread.currentThread().getName());
+        }
+        finally {
+            lock.unlock();
+        }
+    }
 
+    @Transactional
+    public  void test(Student student) throws InterruptedException {
+        t1 = new Thread(() -> {
+            t1.currentThread().setName("one");
+            updateService(student);
+        });
+        t2 = new Thread(() -> {
+            t1.currentThread().setName("two");
+            updateService(student);
+        });
 
+        t1.start();
+        t2.start();
 
-
-
-
-
-
-
-
-
-
-@Transactional
-	public void placeStudentService(Long id) {
-		try {
-			Student student = daoClass.getStudentByIdDao(id);  //submit(id)-->service-->here  // get details of id
-			System.out.println("id after coming to service :"+id);
-			if (student != null && student.getIsExists() == 1) {   // setting student details to placed student
-				PlacedStudent placedStudent = new PlacedStudent();
-				placedStudent.setId(student.getId());
-				System.out.println("id for setting :" +id);
-				placedStudent.setName(student.getName());
-				placedStudent.setRollno(student.getRollno());
-				placedStudent.setGmail(student.getGmail());
-				placedStudent.setMark(student.getMark());
-				daoClass.saveOrUpdatePlacedStudent(placedStudent);  // save in another table
-
-				daoClass.updatePlacementStatus(student);			// soft delete
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//-------------------------------------------------------------postman----------------------------------------------
-
-	//create in postman
-	@Transactional
-	public Student createStudentServicePostman(Student student, Long id) {
-		ValidationForPostMan.validateStudent(student, daoClass, true);
-		daoClass.createStudentDao(student);
-		return student;
-	}
-
-
-	//update in postman
-	@Transactional
-	public Student updateStudentPostmanService(Student student) {
-		ValidationForPostMan.validateStudent(student, daoClass, false);
-		daoClass.UpdateStudentDao(student);
-		return student;
-	}
-
+        t1.join();
+        t2.join();
+    }
 }
-

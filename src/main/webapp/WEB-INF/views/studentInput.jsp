@@ -5,11 +5,12 @@
     <title>Edit Student</title>
 </head>
 <body>
-<h2>update Student</h2>
-<form action="update" method="post">
+<h2>Insert Student</h2>
+<form action="GetDetails" method="post">
 
 <label>ID:</label>
     <input type="text" name="id" value="${student.id}"/>
+
 
 
 <label>Name:</label>
@@ -19,7 +20,7 @@
     <label>RollNo:</label>
         <input type="text" name="rollno" value="${student.rollno}"/><br/>
 
-  <input type="submit" value="update"/>
+  <input type="submit" value="Insert"/>
 
 
 </body>

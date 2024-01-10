@@ -26,9 +26,9 @@
     </bean>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://localhost:3306/two"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/emp"/>
         <property name="username" value="root"/>
-        <property name="password" value="welcome"/>
+        <property name="password" value="Mobiversa@12345"/>
     </bean>
 
 <!--    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">-->
