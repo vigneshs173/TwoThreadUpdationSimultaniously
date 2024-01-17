@@ -28,11 +28,11 @@ public class DaoClass {
 
     public Student fetchDetailsDao(Long id)
     {
-        Session session= sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        Student st = session.get(Student.class,id);
-        tx.commit();
-        session.close();
+        Session session= sessionFactory.getCurrentSession();
+        String hql = "FROM Student Where id=:id";
+        Student st = (Student) session.createQuery(hql,Student.class).
+                setParameter("id",id).
+                getSingleResult();
         return st;
     }
 

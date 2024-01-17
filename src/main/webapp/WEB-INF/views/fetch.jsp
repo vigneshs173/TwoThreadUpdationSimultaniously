@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Fetch Student</h2>
-    
+
     <form action="fetching" method="post">
 
 

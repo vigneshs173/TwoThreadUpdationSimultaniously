@@ -1,3 +1,4 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
@@ -6,22 +7,29 @@
 </head>
 <body>
 <h2>Insert Student</h2>
-<form action="GetDetails" method="post">
+<p>${errors}</p>
+<form:form modelAttribute="student" action="GetDetails" method="post">
 
-<label>ID:</label>
-    <input type="text" name="id" value="${student.id}"/>
+    <label>ID:</label>
+    <form:input type="text" path="id" name="id" />
+    <p>
+        <form:errors path="id"/>
+    </p>
 
-
-
-<label>Name:</label>
-    <input type="text" name="name" value="${student.name}"/><br/>
-
+    <label>Name:</label>
+    <form:input type="text" path="name" />
+    <p>
+        <form:errors path="name"/>
+    </p>
 
     <label>RollNo:</label>
-        <input type="text" name="rollno" value="${student.rollno}"/><br/>
+    <form:input type="text" path="rollno" />
+    <p>
+        <form:errors path="rollno"/>
+    </p>
 
-  <input type="submit" value="Insert"/>
+    <input type="submit" value="Insert"/>
 
-
+</form:form>
 </body>
 </html>

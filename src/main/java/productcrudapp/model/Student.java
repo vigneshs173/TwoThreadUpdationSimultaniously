@@ -1,6 +1,7 @@
 package productcrudapp.model;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
 
 import javax.persistence.Entity;
@@ -19,6 +20,7 @@ public class Student {
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Long id;
+	@NotNull(message = "name mustn't be null")
 	private String name;
 	private int rollno;
 
